@@ -1,0 +1,43 @@
+{
+	"name": "ds_sink_dynamic",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "sink_adls2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"p_directory_dyn": {
+				"type": "String"
+			},
+			"p_file_n_dyn": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().p_file_n_dyn",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().p_directory_dyn",
+					"type": "Expression"
+				},
+				"fileSystem": "bronze-data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Date",
+				"type": "String"
+			}
+		]
+	}
+}
