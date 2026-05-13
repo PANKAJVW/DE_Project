@@ -1,5 +1,5 @@
 {
-	"name": "DelimitedText1",
+	"name": "ds_source_dynamic",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "http_source",
