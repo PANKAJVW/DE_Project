@@ -1,0 +1,32 @@
+{
+	"name": "ds_json_lookup",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "sink_adls2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "ADF_parameters.json",
+				"fileSystem": "parameters"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"p_rel_url": {
+					"type": "string"
+				},
+				"p_directory_dyn": {
+					"type": "string"
+				},
+				"p_file_n_dyn": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}
