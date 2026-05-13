@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage2'"
 		},
+		"sink_adls2_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'sink_adls2'"
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://adls2storage001.dfs.core.windows.net/"
@@ -22,6 +26,10 @@
 		"http_source_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://raw.githubusercontent.com"
+		},
+		"sink_adls2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adls2storage001.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -53,6 +61,9 @@
 					"AzureDataLakeStorage2_accountKey": {
 						"value": "[parameters('AzureDataLakeStorage2_accountKey')]"
 					},
+					"sink_adls2_accountKey": {
+						"value": "[parameters('sink_adls2_accountKey')]"
+					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
 					},
@@ -61,6 +72,9 @@
 					},
 					"http_source_properties_typeProperties_url": {
 						"value": "[parameters('http_source_properties_typeProperties_url')]"
+					},
+					"sink_adls2_properties_typeProperties_url": {
+						"value": "[parameters('sink_adls2_properties_typeProperties_url')]"
 					}
 				}
 			},

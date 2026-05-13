@@ -8,6 +8,9 @@
 		"AzureDataLakeStorage2_accountKey": {
 			"value": ""
 		},
+		"sink_adls2_accountKey": {
+			"value": ""
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"value": "https://adls2storage001.dfs.core.windows.net/"
 		},
@@ -16,6 +19,9 @@
 		},
 		"http_source_properties_typeProperties_url": {
 			"value": "https://raw.githubusercontent.com"
+		},
+		"sink_adls2_properties_typeProperties_url": {
+			"value": "https://adls2storage001.dfs.core.windows.net/"
 		}
 	}
 }
