@@ -50,6 +50,7 @@
 						"value": "@activity('Lookup').output.value",
 						"type": "Expression"
 					},
+					"isSequential": false,
 					"activities": [
 						{
 							"name": "Copy data",
@@ -62,7 +63,16 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": [],
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "@{item().p_rel_url}"
+								},
+								{
+									"name": "Destination",
+									"value": "bronze-data/@{item().p_directory_dyn}/@{item().p_file_n_dyn}"
+								}
+							],
 							"typeProperties": {
 								"source": {
 									"type": "DelimitedTextSource",
@@ -128,22 +138,6 @@
 				}
 			},
 			{
-				"name": "Copy data1",
-				"type": "Copy",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"enableStaging": false
-				}
-			},
-			{
 				"name": "Execute Pipeline1",
 				"type": "ExecutePipeline",
 				"dependsOn": [
@@ -159,6 +153,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"pipeline": {
+						"referenceName": "run_databricks",
+						"type": "PipelineReference"
+					},
 					"waitOnCompletion": true
 				}
 			}
