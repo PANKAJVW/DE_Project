@@ -23,6 +23,10 @@
 			"type": "string",
 			"defaultValue": "https://adls2storage001.dfs.core.windows.net/"
 		},
+		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0513-200515-5uiz1e3m"
+		},
 		"http_source_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://raw.githubusercontent.com"
@@ -69,6 +73,9 @@
 					},
 					"AzureDataLakeStorage2_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage2_properties_typeProperties_url')]"
+					},
+					"AzureDatabricks1_properties_typeProperties_existingClusterId": {
+						"value": "[parameters('AzureDatabricks1_properties_typeProperties_existingClusterId')]"
 					},
 					"http_source_properties_typeProperties_url": {
 						"value": "[parameters('http_source_properties_typeProperties_url')]"

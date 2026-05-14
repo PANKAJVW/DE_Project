@@ -17,6 +17,9 @@
 		"AzureDataLakeStorage2_properties_typeProperties_url": {
 			"value": "https://adls2storage001.dfs.core.windows.net/"
 		},
+		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
+			"value": "0513-200515-5uiz1e3m"
+		},
 		"http_source_properties_typeProperties_url": {
 			"value": "https://raw.githubusercontent.com"
 		},

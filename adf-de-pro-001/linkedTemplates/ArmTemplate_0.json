@@ -23,6 +23,10 @@
 			"type": "string",
 			"defaultValue": "https://adls2storage001.dfs.core.windows.net/"
 		},
+		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0513-200515-5uiz1e3m"
+		},
 		"http_source_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://raw.githubusercontent.com"
@@ -67,6 +71,22 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureDatabricks1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-7405604492340636.16.azuredatabricks.net",
+					"authentication": "MSI",
+					"workspaceResourceId": "/subscriptions/379f5bc1-3f0b-4fb2-a045-1035b2625dec/resourceGroups/Azure_DE_Group/providers/Microsoft.Databricks/workspaces/DE_Project",
+					"existingClusterId": "[parameters('AzureDatabricks1_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/http_source')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -99,38 +119,76 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ds_source_dynamic')]",
+			"name": "[concat(parameters('factoryName'), '/run_databricks')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Notebook1",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Repos/Databricks/Silver_Layer"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_json_lookup')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "http_source",
+					"referenceName": "sink_adls2",
 					"type": "LinkedServiceReference"
 				},
-				"parameters": {
-					"p_rel_url": {
-						"type": "String"
-					}
-				},
 				"annotations": [],
-				"type": "DelimitedText",
+				"type": "Json",
 				"typeProperties": {
 					"location": {
-						"type": "HttpServerLocation",
-						"relativeUrl": {
-							"value": "@dataset().p_rel_url",
-							"type": "Expression"
-						}
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
+						"type": "AzureBlobFSLocation",
+						"fileName": "ADF_parameters.json",
+						"fileSystem": "parameters"
+					}
 				},
-				"schema": []
+				"schema": {
+					"type": "object",
+					"properties": {
+						"p_rel_url": {
+							"type": "string"
+						},
+						"p_directory_dyn": {
+							"type": "string"
+						},
+						"p_file_n_dyn": {
+							"type": "string"
+						}
+					}
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/http_source')]"
+				"[concat(variables('factoryId'), '/linkedServices/sink_adls2')]"
 			]
 		},
 		{
@@ -182,40 +240,38 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ds_json_lookup')]",
+			"name": "[concat(parameters('factoryName'), '/ds_source_dynamic')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "sink_adls2",
+					"referenceName": "http_source",
 					"type": "LinkedServiceReference"
 				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "ADF_parameters.json",
-						"fileSystem": "parameters"
+				"parameters": {
+					"p_rel_url": {
+						"type": "String"
 					}
 				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"p_rel_url": {
-							"type": "string"
-						},
-						"p_directory_dyn": {
-							"type": "string"
-						},
-						"p_file_n_dyn": {
-							"type": "string"
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": {
+							"value": "@dataset().p_rel_url",
+							"type": "Expression"
 						}
-					}
-				}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/sink_adls2')]"
+				"[concat(variables('factoryId'), '/linkedServices/http_source')]"
 			]
 		},
 		{
@@ -273,6 +329,7 @@
 								"value": "@activity('Lookup').output.value",
 								"type": "Expression"
 							},
+							"isSequential": false,
 							"activities": [
 								{
 									"name": "Copy data",
@@ -285,7 +342,16 @@
 										"secureOutput": false,
 										"secureInput": false
 									},
-									"userProperties": [],
+									"userProperties": [
+										{
+											"name": "Source",
+											"value": "@{item().p_rel_url}"
+										},
+										{
+											"name": "Destination",
+											"value": "bronze-data/@{item().p_directory_dyn}/@{item().p_file_n_dyn}"
+										}
+									],
 									"typeProperties": {
 										"source": {
 											"type": "DelimitedTextSource",
@@ -349,6 +415,30 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "Execute Pipeline1",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ForEach",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "run_databricks",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
 					}
 				],
 				"policy": {
@@ -358,6 +448,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_json_lookup')]",
+				"[concat(variables('factoryId'), '/pipelines/run_databricks')]",
 				"[concat(variables('factoryId'), '/datasets/ds_source_dynamic')]",
 				"[concat(variables('factoryId'), '/datasets/ds_sink_dynamic')]"
 			]
