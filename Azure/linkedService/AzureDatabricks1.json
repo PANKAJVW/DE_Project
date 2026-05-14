@@ -7,7 +7,7 @@
 			"domain": "https://adb-7405604492340636.16.azuredatabricks.net",
 			"authentication": "MSI",
 			"workspaceResourceId": "/subscriptions/379f5bc1-3f0b-4fb2-a045-1035b2625dec/resourceGroups/Azure_DE_Group/providers/Microsoft.Databricks/workspaces/DE_Project",
-			"existingClusterId": "7405604492340636"
+			"existingClusterId": "0513-200515-5uiz1e3m"
 		}
 	}
 }
